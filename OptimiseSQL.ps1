@@ -1,20 +1,3 @@
-<# Prepare-D365DevelopmentMachine
- #
- # Preparation:
- # So that the installations do not step on each other: First run windows updates, also
- # wait for antimalware to run scan...otherwise this will take a long time and we do not
- # want an automatic reboot to occur while this script is executing.
- #
- # Execute this script:
- # Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('http://192.166.1.15:8000/Prepare-D365DevelopmentMachine.ps1'))
- #
- # Tested on Windows 10 and Windows Server 2016
- # Tested on F&O 7.3 OneBox and F&O 8.1 OneBox and a 10.0.11 Azure Cloud Hosted Environment (CHE) deployed from LCS
- #
- # Ideas:
- #  Download useful SQL and PowerShell scripts, using Git?
- #>
-
 #region Install and run Ola Hallengren's IndexOptimize
 
 Function Execute-Sql {
@@ -90,44 +73,44 @@ If (Test-Path "HKLM:\Software\Microsoft\Microsoft SQL Server\Instance Names\SQL"
 
     Write-Host "purging disposable data"
 
-$DiposableTables = @(
-    "batchjobhistory"
-    ,"BatchConstraintsHistory"
-    ,"batchhistory"
-    ,"DMFDEFINITIONGROUPEXECUTION"
-    ,"DMFDEFINITIONGROUPEXECUTIONHISTORY"
-    ,"DMFEXECUTION"
-    ,"DMFSTAGINGEXECUTIONERRORS"
-    ,"DMFSTAGINGLOG"
-    ,"DMFSTAGINGLOGDETAILS"
-    ,"DMFSTAGINGVALIDATIONLOG"
-    ,"eventcud"
-    ,"EVENTCUDLINES"
-    ,"formRunConfiguration"
-    ,"INVENTSUMLOGTTS"
-    ,"MP.PeggingIdMapping"
-    ,"REQPO"
-    ,"REQTRANS"
-    ,"REQTRANSCOV"
-    ,"RETAILLOG"
-    ,"SALESPARMLINE"
-    ,"SALESPARMSUBLINE"
-    ,"SALESPARMSUBTABLE"
-    ,"SALESPARMTABLE"
-    ,"SALESPARMUPDATE"
-    ,"SUNTAFRELEASEFAILURES"
-    ,"SUNTAFRELEASELOGLINEDETAILS"
-    ,"SUNTAFRELEASELOGTABLE"
-    ,"SUNTAFRELEASELOGTRANS"
-    ,"sysdatabaselog"
-    ,"syslastvalue"
-)
+    $DiposableTables = @(
+        "batchjobhistory"
+        ,"BatchConstraintsHistory"
+        ,"batchhistory"
+        ,"DMFDEFINITIONGROUPEXECUTION"
+        ,"DMFDEFINITIONGROUPEXECUTIONHISTORY"
+        ,"DMFEXECUTION"
+        ,"DMFSTAGINGEXECUTIONERRORS"
+        ,"DMFSTAGINGLOG"
+        ,"DMFSTAGINGLOGDETAILS"
+        ,"DMFSTAGINGVALIDATIONLOG"
+        ,"eventcud"
+        ,"EVENTCUDLINES"
+        ,"formRunConfiguration"
+        ,"INVENTSUMLOGTTS"
+        ,"MP.PeggingIdMapping"
+        ,"REQPO"
+        ,"REQTRANS"
+        ,"REQTRANSCOV"
+        ,"RETAILLOG"
+        ,"SALESPARMLINE"
+        ,"SALESPARMSUBLINE"
+        ,"SALESPARMSUBTABLE"
+        ,"SALESPARMTABLE"
+        ,"SALESPARMUPDATE"
+        ,"SUNTAFRELEASEFAILURES"
+        ,"SUNTAFRELEASELOGLINEDETAILS"
+        ,"SUNTAFRELEASELOGTABLE"
+        ,"SUNTAFRELEASELOGTRANS"
+        ,"sysdatabaselog"
+        ,"syslastvalue"
+    )
 
-$DiposableTables | ForEach-Object {
-    Write-Host "purging $_"
-    $sql = "truncate table $_"
-    Execute-Sql -server "." -database "AxDB" -command $sql
-}
+    $DiposableTables | ForEach-Object {
+        Write-Host "purging $_"
+        $sql = "truncate table $_"
+        Execute-Sql -server "." -database "AxDB" -command $sql
+    }
     
     Write-Host "purging disposable batch job data"
     $sql = "delete batchjob where status in (3, 4, 8)
