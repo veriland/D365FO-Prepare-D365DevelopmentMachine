@@ -1,5 +1,28 @@
 #region Install and run Ola Hallengren's IndexOptimize
 
+#region Installing d365fo.tools
+# This is requried by Find-Module, by doing it beforehand we remove some warning messages
+Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+
+# Installing d365fo.tools
+$Module2Service = $('dbatools',
+    'd365fo.tools')
+
+$Module2Service | ForEach-Object {
+    if (Get-Module -ListAvailable -Name $_) {
+        Write-Host "Updating " + $_
+        Update-Module -Name $_ -Force
+    } 
+    else {
+        Write-Host "Installing " + $_
+        Install-Module -Name $_ -SkipPublisherCheck -Scope AllUsers
+        Import-Module $_
+    }
+}
+#endregion
+
+Set-DbatoolsInsecureConnection -SessionOnly
+
 Function Execute-Sql {
     Param(
         [Parameter(Mandatory = $true)][string]$server,
